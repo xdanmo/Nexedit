@@ -1,0 +1,462 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Figtree', Inter, -apple-system, sans-serif;
+    background-color: #FFFFEB;
+    color: #1A1A1A;
+  }
+}
+
+/* ==========================================================================
+   TipTap Collaboration Remote Cursor & Caret Styles
+   ========================================================================== */
+
+.collaboration-cursor__caret,
+.collaboration-carets__caret {
+  position: relative;
+  margin-left: -1px;
+  margin-right: -1px;
+  border-left: 2px solid #034F46;
+  border-right: 0 solid transparent;
+  word-break: normal;
+  pointer-events: none;
+  display: inline-block;
+  vertical-align: text-bottom;
+  height: 1.25em;
+  transition: all 0.05s ease-out;
+}
+
+.collaboration-cursor__label,
+.collaboration-carets__label {
+  position: absolute;
+  top: -1.75em;
+  left: -2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  font-family: 'Figtree', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: 0.01em;
+  color: #FFFFFF;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  border-radius: 4px 4px 4px 0;
+  box-shadow: 0 2px 8px rgba(26, 26, 15, 0.15);
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
+  z-index: 20;
+  animation: fadeInLabel 0.15s ease-in-out;
+}
+
+/* Remote selection highlight using the lavender palette */
+.collaboration-cursor__selection,
+.collaboration-carets__selection {
+  background-color: #F0D7FF;
+  opacity: 0.5;
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+@keyframes fadeInLabel {
+  from {
+    opacity: 0;
+    transform: translateY(2px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ==========================================================================
+   Stacked A4 Page Sheet Styles & Pixel-Perfect Print Rules
+   ========================================================================== */
+
+.page-sheet-container {
+  transition: all 0.2s ease-in-out;
+  will-change: transform, box-shadow;
+}
+
+@page {
+  size: A4 portrait;
+  margin: 15mm 20mm 15mm 20mm;
+}
+
+@media print {
+  /* 1. Global Reset for Print */
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  html,
+  body {
+    background-color: #FFFFFF !important;
+    background: #FFFFFF !important;
+    color: #1A1A1A !important;
+    font-family: 'Figtree', -apple-system, sans-serif !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Reset all parent layout containers so they never clip or shift content */
+  #root,
+  #root > div,
+  .overflow-hidden,
+  .overflow-y-auto,
+  [class*="lg:ml-"],
+  [class*="ml-"] {
+    background-color: #FFFFFF !important;
+    background: #FFFFFF !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    margin-left: 0 !important;
+    padding: 0 !important;
+    position: static !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Hide interactive application chrome (surgical — avoids blanket 'button' rule) */
+  header,
+  aside,
+  .toolbar-container,
+  .add-page-action-bar,
+  #simulate-network-toggle,
+  .page-sheet-header button,
+  [title="Print or export pages to PDF"],
+  [title*="Workspace Pages"] {
+    display: none !important;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    display: block !important;
+  }
+
+  /* 2. Each Page Sheet becomes exactly one physical A4 page */
+  .page-sheet-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background-color: #FFFFFF !important;
+    background: #FFFFFF !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    
+    /* Enforce clean page break AFTER each page, except the last one */
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    
+    display: block !important;
+    position: relative !important;
+  }
+
+  .page-sheet-container:last-of-type {
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
+
+  /* 3. Page Header Guide */
+  .page-sheet-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    border-bottom: 1px solid rgba(26, 26, 26, 0.15) !important;
+    padding-bottom: 8px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .page-sheet-header span.rounded-full {
+    background-color: #E4E4D0 !important;
+    color: #034F46 !important;
+    border: 1px solid rgba(26, 26, 26, 0.12) !important;
+    padding: 2px 10px !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    display: inline-block !important;
+  }
+
+  /* 4. ProseMirror Content in Print */
+  .ProseMirror {
+    min-height: auto !important;
+    height: auto !important;
+    font-size: 15px !important;
+    line-height: 1.45 !important;
+    color: #1A1A1A !important;
+    overflow: visible !important;
+  }
+
+  .ProseMirror h1 {
+    font-family: 'EB Garamond', Cormorant Garamond, Georgia, serif !important;
+    font-size: 34px !important;
+    color: #111111 !important;
+    line-height: 1.1 !important;
+    margin-top: 0.75rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .ProseMirror h2 {
+    font-family: 'EB Garamond', Cormorant Garamond, Georgia, serif !important;
+    font-size: 24px !important;
+    color: #034F46 !important;
+    line-height: 1.2 !important;
+    margin-top: 0.75rem !important;
+    margin-bottom: 0.35rem !important;
+  }
+
+  .ProseMirror p {
+    font-size: 15px !important;
+    line-height: 1.45 !important;
+    color: #1A1A1A !important;
+  }
+
+  .ProseMirror blockquote {
+    border-left: 3px solid #034F46 !important;
+    color: #034F46 !important;
+    font-family: 'EB Garamond', serif !important;
+    font-size: 18px !important;
+    font-style: italic !important;
+    padding-left: 12px !important;
+    margin: 12px 0 !important;
+  }
+
+  .ProseMirror code {
+    background-color: #E4E4D0 !important;
+    color: #034F46 !important;
+    border: 1px solid rgba(26, 26, 26, 0.15) !important;
+    padding: 1px 4px !important;
+    border-radius: 3px !important;
+    font-family: 'JetBrains Mono', monospace !important;
+    font-size: 13px !important;
+  }
+
+  .ProseMirror pre {
+    background-color: #111111 !important;
+    color: #FFFFEB !important;
+    border: 1px solid rgba(26, 26, 26, 0.3) !important;
+    padding: 12px !important;
+    border-radius: 8px !important;
+    margin: 12px 0 !important;
+  }
+
+  .ProseMirror pre code {
+    background: transparent !important;
+    color: inherit !important;
+    border: none !important;
+  }
+}
+
+/* ==========================================================================
+   Editorial ProseMirror & Document Canvas Typography
+   ========================================================================== */
+
+.ProseMirror {
+  outline: none;
+  min-height: 650px;
+  color: #1A1A1A;
+  font-family: 'Figtree', -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.35;
+}
+
+.ProseMirror:focus {
+  outline: none;
+}
+
+.ProseMirror:focus-visible {
+  outline: 2px solid rgba(3, 79, 70, 0.3);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+/* Editorial Headings with EB Garamond, 400 weight, tight line-height, negative letter-spacing */
+.ProseMirror h1 {
+  font-family: 'EB Garamond', Cormorant Garamond, Georgia, serif;
+  font-weight: 400;
+  font-size: 44px;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: #111111;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+
+@media (min-width: 768px) {
+  .ProseMirror h1 {
+    font-size: 52px;
+    line-height: 1.02;
+  }
+}
+
+.ProseMirror h2 {
+  font-family: 'EB Garamond', Cormorant Garamond, Georgia, serif;
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: #034F46;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.ProseMirror h3 {
+  font-family: 'EB Garamond', Cormorant Garamond, Georgia, serif;
+  font-weight: 500;
+  font-size: 22px;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  color: #111111;
+  margin-top: 1.25rem;
+  margin-bottom: 0.35rem;
+}
+
+/* Body text */
+.ProseMirror p {
+  font-size: 16px;
+  line-height: 1.4;
+  color: #1A1A1A;
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Selection highlight */
+.ProseMirror ::selection {
+  background: #F0D7FF;
+  color: #1A1A1A;
+}
+
+/* Lists */
+.ProseMirror ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.ProseMirror ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.ProseMirror li {
+  margin-top: 0.2rem;
+  margin-bottom: 0.2rem;
+  line-height: 1.35;
+}
+
+.ProseMirror li p {
+  margin: 0;
+  display: inline;
+}
+
+/* Inline Code using Pale Background & Soft Border */
+.ProseMirror code {
+  background-color: #E4E4D0;
+  color: #034F46;
+  padding: 0.15em 0.35em;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88em;
+  border: 1px solid rgba(26, 26, 26, 0.1);
+}
+
+/* Pre / Code Blocks */
+.ProseMirror pre {
+  background: #111111;
+  color: #FFFFEB;
+  font-family: 'JetBrains Mono', monospace;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  margin: 1.25rem 0;
+  overflow-x: auto;
+  border: 1px solid rgba(26, 26, 26, 0.3);
+}
+
+.ProseMirror pre code {
+  color: inherit;
+  padding: 0;
+  background: none;
+  font-size: 0.875rem;
+  border: none;
+}
+
+/* Blockquote */
+.ProseMirror blockquote {
+  border-left: 3px solid #034F46;
+  padding-left: 1rem;
+  margin: 1.25rem 0;
+  font-family: 'EB Garamond', serif;
+  font-size: 1.25rem;
+  font-style: italic;
+  line-height: 1.35;
+  color: #034F46;
+}
+
+/* Strikethrough */
+.ProseMirror s {
+  text-decoration: line-through;
+  color: #888888;
+}
+
+/* Horizontal Rule */
+.ProseMirror hr {
+  border: none;
+  border-top: 1px solid rgba(26, 26, 26, 0.1);
+  margin: 2rem 0;
+}
+
+/* Empty editor placeholder */
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: #888888;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Custom scrollbar for popover lists */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(26, 26, 26, 0.18);
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(26, 26, 26, 0.35);
+}
+

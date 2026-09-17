@@ -1,0 +1,10 @@
+{
+  "name": "wetype",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npm --prefix client run dev",
+    "build": "npm --prefix client run build",
+    "server": "npm --prefix server start"
+  }
+}
